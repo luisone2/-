@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" fill="none">
+  <defs>
+    <linearGradient id="logo-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </linearGradient>
+    <linearGradient id="logo-grad-glow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C084FC" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="12" fill="#141416" stroke="rgba(215, 226, 234, 0.15)" stroke-width="1.5" />
+  <path d="M13 11V26C13 27.6569 14.3431 29 16 29H28" stroke="url(#logo-grad-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="28" cy="14" r="2.5" fill="#8B5CF6" />
+  <path d="M19 18L25 24" stroke="url(#logo-grad-glow)" stroke-width="2.5" stroke-linecap="round" />
+</svg>

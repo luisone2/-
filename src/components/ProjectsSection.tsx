@@ -1,0 +1,372 @@
+import React, { useRef } from 'react';
+import { motion, MotionValue, useScroll, useTransform } from 'framer-motion';
+import { FadeIn } from './FadeIn';
+import { LiveProjectButton } from './Buttons';
+import { calculateProjectCardMetrics } from '../utils/portfolioMath';
+
+export interface ProjectMetricItem {
+  value: number;
+  decimals?: number;
+  suffix: string;
+  label: string;
+}
+
+export interface ProjectItem {
+  number: string;
+  name: string;
+  category: string;
+  role: string;
+  period: string;
+  col1Img1: string;
+  col1Img2: string;
+  col2Img: string;
+  summary: string;
+  deliverables: string;
+  metrics: ProjectMetricItem[];
+  background: string[];
+  process: string[];
+  outcomes: string[];
+}
+
+export const PROJECTS: ProjectItem[] = [
+  {
+    number: '01',
+    name: 'Aura 品牌视觉识别系统',
+    category: '品牌视觉设计',
+    role: '设计组长 · 品牌主创',
+    period: '2025.03 – 2025.07',
+    col1Img1:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055654_911201c5-36d9-4bc6-bac7-331adfce159f.png&w=1280&q=85',
+    col1Img2:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055723_5ceda0b8-d9c2-4665-b2e3-83ba19ba76d1.png&w=1280&q=85',
+    col2Img:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea.png&w=1280&q=85',
+    summary:
+      '从品牌核心内核推导超级符号，制定完备的 VI 视觉规范、字体排版体系与 30+ 项线下全场景物料落地体系。',
+    deliverables: 'Logo 与符号系统 · VI 视觉规范手册 · 30+ 项包装与导视物料落地',
+    metrics: [
+      { value: 30, suffix: '+', label: '项全场景落地物料' },
+      { value: 9.5, decimals: 1, suffix: '/10', label: '客户与园方满意度' },
+      { value: 40, suffix: '+', label: '深度访谈调研样本' },
+    ],
+    background: [
+      '区域内竞品视觉同质化严重，缺乏兼具现代审美温度与高辨识度的品牌核心超级符号。',
+      '带队完成周边 3 家竞品机构实地调研，深度访谈管理方与目标受众各 20+ 人，精准提炼品牌信任痛点。',
+      '原有线下导视、宣传物料及周边延展缺乏统一规范，跨媒介印刷与数字传播视觉一致性不足。',
+    ],
+    process: [
+      '输出完整用户画像与品牌定位调研报告，主导视觉风格推导并完成 3 稿差异化 Logo 方案比稿提案。',
+      '构建完备的 VI 基础规范系统，涵盖标准色彩矩阵、中西文字体排印层级与模块化几何辅助图形。',
+      '统筹推进服装、礼盒包装、宣传册及空间环境导视系统等 30+ 项全场景应用物料的设计打样与落地。',
+    ],
+    outcomes: [
+      '30+ 项全场景品牌应用物料高质量交付落地，建立可长期复用的标准化《VI 视觉识别管理手册》。',
+      '最终提案获得合作方与园方 9.5 / 10 的高度满意度评价，显著提升品牌线下空间与传播辨识度。',
+      '凭借完整的商业调研闭环与高完成度视觉执行，该项目获评校级优秀课程设计作业。',
+    ],
+  },
+  {
+    number: '02',
+    name: 'Solaris 智慧交互体验',
+    category: 'UI/UX 界面设计',
+    role: '独立 UI/UX 设计师',
+    period: '2024.11 – 2025.04',
+    col1Img1:
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1280&q=85',
+    col1Img2:
+      'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1280&q=85',
+    col2Img:
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1280&q=85',
+    summary:
+      '基于 Figma 深度搭建模块化设计系统与 Design Token 规范，覆盖多端响应式 Web 控制台、车载 HUD 与高保真交互原型。',
+    deliverables: 'Design System 组件库 · 多端响应式 UI · 交互原型与微动效',
+    metrics: [
+      { value: 60, suffix: '+', label: 'Figma 原子化组件' },
+      { value: 3, suffix: '端', label: '响应式多端协同' },
+      { value: 42, suffix: '%', label: '高频任务路径提效' },
+    ],
+    background: [
+      '复杂数据中台与智能终端信息密度过高，用户在高频监控与跨层级操作中面临较大认知负荷。',
+      '桌面 Web 控制台、移动端与智能 HUD 终端之间缺乏统一的视觉语言与组件复用机制。',
+      '深色模式（Dark Mode）下传统高饱和色块易引发视觉疲劳，信息呼吸感与对比度亟待系统重构。',
+    ],
+    process: [
+      '基于 Figma 搭建原子化 Design System 与全局 Design Token 规范，统一间距、圆角与色彩语义变量。',
+      '重构核心业务信息架构（IA），采用 Bento 模块化网格布局将关键指标卡片与交互热区清晰分层。',
+      '输出高保真可交互原型，并为状态切换、数据加载与微交互设计细腻的弹簧物理动效曲线。',
+    ],
+    outcomes: [
+      '沉淀 60+ 个高复用性 Figma Auto-Layout 变体组件，覆盖 Web 端、平板端与车载 HUD 三端一致体验。',
+      '可用性测试走查显示，高频任务检索与跨层级操作步骤精简 42%，深色界面可读性大幅跃升。',
+      '输出完备的交互说明文档与动效参数标注，助力设计与前端开发实现零误差高保真还原。',
+    ],
+  },
+  {
+    number: '03',
+    name: 'Nextlevel 三维与动态短片',
+    category: '三维与动效',
+    role: '三维视觉 & 动态设计师',
+    period: '2024.09 – 2025.02',
+    col1Img1:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db.png&w=1280&q=85',
+    col1Img2:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055431_11d841fd-8b41-46a5-82e4-b04f2407a7d8.png&w=1280&q=85',
+    col2Img:
+      'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327.png&w=1280&q=85',
+    summary:
+      '运用 Cinema 4D 结合专业材质与定制灯光渲染，制作精细的工业级产品三维透视、三渲二风格化画面与 After Effects 节奏动态短片。',
+    deliverables: 'C4D 产品三维渲染 · 三渲二风格化视觉 · AE 动态短片包装',
+    metrics: [
+      { value: 18, suffix: '+', label: '高精度三维资产' },
+      { value: 60, suffix: 'fps', label: '高帧率动态成片' },
+      { value: 35, suffix: '%', label: '后期合成效率提升' },
+    ],
+    background: [
+      '传统静态平面海报难以立体呈现先锋概念产品的精密工业结构、内部透视关系与 PBR 材质张力。',
+      '新媒体数字传播亟需具备强烈视觉冲击力的三维动态短片（Motion Graphics）以抓住受众前 3 秒注意力。',
+      '写实硬表面渲染与“三渲二”风格化视觉之间需要建立兼顾艺术表现力与渲染效率的标准化流程。',
+    ],
+    process: [
+      '运用 Cinema 4D 进行高精度硬表面建模与拓扑优化，定制阳极氧化铝、半透明磨砂与色散玻璃材质。',
+      '搭建演播室级 HDRI 与多光源戏剧化布光方案，采用多通道（AOV）分层渲染精准把控反射与景深质感。',
+      '导入 After Effects 与 Premiere Pro 进行分镜剪辑、关键帧弹性曲线调校、粒子视效合成与卡点音效包装。',
+    ],
+    outcomes: [
+      '高质量输出 18+ 组超清工业级产品三维主视觉（KV）渲染图及多支 60fps 概念动态短片。',
+      '跑通成熟的“写实光影 + 三渲二风格化”双轨渲染合成管线，单镜头后期迭代效率提升 35%。',
+      '相关三维视觉与动态包装方案应用于多项校园数字媒体展映与视觉传播项目，获专业导师高度评价。',
+    ],
+  },
+  {
+    number: '04',
+    name: 'Synthetix 生成式 AI 视觉实验室',
+    category: '生成式 AI 视觉',
+    role: 'AIGC 视觉工作流主创',
+    period: '2025.01 – 2025.08',
+    col1Img1:
+      'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=1280&q=85',
+    col1Img2:
+      'https://images.unsplash.com/photo-1618172193622-ae2d025f4032?auto=format&fit=crop&w=1280&q=85',
+    col2Img:
+      'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1280&q=85',
+    summary:
+      '搭建 ComfyUI 可控生成管线（ControlNet + IP-Adapter），结合 Runway Gen-3 视频生成模型，输出电影质感概念场景与高张力视觉叙事。',
+    deliverables: 'ComfyUI 定制控图工作流 · Runway 动态视频生成 · AI 概念视效',
+    metrics: [
+      { value: 12, suffix: '+', label: 'ComfyUI 定制工作流' },
+      { value: 300, suffix: '%', label: '概念提案效率提升' },
+      { value: 25, suffix: '+', label: '商业级 AI 视觉成片' },
+    ],
+    background: [
+      '商业视觉前期概念探索（Moodboard 与分镜设定）周期漫长，传统手绘或三维搭建的试错成本高昂。',
+      '普通文生图工具依赖随机抽卡，存在构图不可控、主体结构漂移与品牌色调难以统一等核心痛点。',
+      '静态 AI 概念图向动态视频延展时，容易出现画面闪烁、镜头运动失真与材质细节崩坏。',
+    ],
+    process: [
+      '基于 ComfyUI 搭建节点式可控生成管线，深度串联 ControlNet（线稿/深度/姿态控制）与 IP-Adapter 风格迁移。',
+      '结合 Midjourney 与 NanoBanana 进行高精度材质与先锋构图探索，建立结构化光影与镜头语言提示词库。',
+      '引入 Runway Gen-3 与 Photoshop 后期精修，通过首尾帧锚定与运动笔刷控制，输出电影级运镜动态短片。',
+    ],
+    outcomes: [
+      '沉淀 12+ 套可复用的 ComfyUI 商业级控图工作流，覆盖产品合成、先锋海报与概念场景快速生成。',
+      '将前期视觉提案与多风格方案比稿周期压缩 70% 以上，整体创意探索与出图效率提升 300%。',
+      '累计产出 25+ 组高张力 AIGC 概念视觉与动态叙事短片，实现 AI 生成力与专业美术指导的深度融合。',
+    ],
+  },
+  {
+    number: '05',
+    name: '泰州科技馆 · 学术会议平面矩阵',
+    category: '平面与海报',
+    role: '科普视觉设计助理 & 科研处助理',
+    period: '2024.01 – 2025.10',
+    col1Img1:
+      'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1280&q=85',
+    col1Img2:
+      'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1280&q=85',
+    col2Img:
+      'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1280&q=85',
+    summary:
+      '为泰州市科技馆及校级学术研讨会议量身打造的平面物料矩阵，涵盖 20+ 件主视觉海报、12 块展厅导视展板改版及 3 场学术会议全套视觉。',
+    deliverables: '活动主视觉海报 · 学术研讨会议全套物料 · 科普展板与导视系统',
+    metrics: [
+      { value: 5000, suffix: '+', label: '市民科普触达人次' },
+      { value: 200, suffix: '+', label: '份科研文档标准化归档' },
+      { value: 12, suffix: '块', label: '常设展厅展板改版' },
+    ],
+    background: [
+      '泰州市科技馆常设展厅部分展板存在图文陈旧、高密度科普信息层级混乱、青少年阅读兴趣偏低等痛点。',
+      '暑期 6 场系列科普活动、3 场“科普进社区”与校科研处学术会议并行，需在紧凑周期内完成多规格物料交付。',
+      '跨部门对接与大型喷绘印刷落地流程中，亟需建立统一的版式网格、印前色彩规范与文档归档标准。',
+    ],
+    process: [
+      '主导科技馆暑期系列科普活动全套视觉设计，统筹完成 12 块常设展厅展板的信息可视化重构与版式升级。',
+      '独立负责校科研处 3 场校级学术会议整体视觉系统（主视觉海报、舞台背景板、议程手册、席卡及 PPT 模板）。',
+      '运用模块化网格系统梳理高密度文字与图表，跟进现场物料布置，并独立拍摄剪辑 6 条配套科普短视频。',
+    ],
+    outcomes: [
+      '累计设计输出 20+ 件大型科普展板与活动主视觉海报，被科技馆官方公众号及视频号发布，触达市民 5000+ 人次。',
+      '圆满保障 3 场校级学术会议零差错视觉落地，并建立标准化流程完成 200+ 份科研申报与成果材料规范归档。',
+      '凭借高效的多线程抗压交付能力与严谨的印前完稿质量，获得泰州市科技馆运营部门与校科研处高度认可。',
+    ],
+  },
+];
+
+interface StickyProjectCardProps {
+  project: ProjectItem;
+  index: number;
+  totalCards: number;
+  progress: MotionValue<number>;
+  onSelectProject: (project: ProjectItem) => void;
+}
+
+const StickyProjectCard: React.FC<StickyProjectCardProps> = ({
+  project,
+  index,
+  totalCards,
+  progress,
+  onSelectProject,
+}) => {
+  const { targetScale, topOffsetPx, rangeStart } = calculateProjectCardMetrics(
+    index,
+    totalCards
+  );
+  const scale = useTransform(progress, [rangeStart, 1], [1, targetScale]);
+
+  return (
+    <div className="h-[85vh] sticky top-24 md:top-32 flex items-start justify-center">
+      <motion.article
+        style={{
+          scale,
+          top: `${topOffsetPx}px`,
+          willChange: 'transform',
+        }}
+        className="relative w-full max-w-6xl rounded-[40px] sm:rounded-[50px] md:rounded-[60px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:p-6 md:p-8 flex flex-col gap-6 md:gap-8 shadow-[0_-20px_50px_rgba(0,0,0,0.75)]"
+      >
+        {/* Top Row: Number, Category + Project Name, Live Project Button */}
+        <div className="flex flex-wrap items-center justify-between gap-4 px-2 sm:px-4">
+          <div className="flex items-center gap-5 sm:gap-8 md:gap-12">
+            <span
+              className="font-black text-[#D7E2EA] leading-none"
+              style={{ fontSize: 'clamp(3rem, 10vw, 140px)' }}
+            >
+              {project.number}
+            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[#D7E2EA]/60 font-light uppercase tracking-widest text-xs sm:text-sm md:text-base">
+                ({project.category})
+              </span>
+              <h3
+                className="text-[#D7E2EA] font-medium uppercase tracking-wide leading-tight"
+                style={{ fontSize: 'clamp(1.1rem, 2.5vw, 2.25rem)' }}
+              >
+                {project.name}
+              </h3>
+            </div>
+          </div>
+
+          <LiveProjectButton onClick={() => onSelectProject(project)} />
+        </div>
+
+        {/* Bottom Row: Two-Column Image Grid (40% Left with 2 stacked images, 60% Right with 1 tall image) */}
+        <div
+          data-cursor="project"
+          data-cursor-label="查看项目"
+          onClick={() => onSelectProject(project)}
+          className="flex flex-col md:flex-row gap-3 sm:gap-4 w-full cursor-pointer"
+        >
+          {/* Left Column (40%) */}
+          <div className="w-full md:w-[40%] flex flex-col gap-3 sm:gap-4">
+            <div
+              className="w-full overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px] bg-[#16181D]"
+              style={{ height: 'clamp(130px, 16vw, 230px)' }}
+            >
+              <img
+                src={project.col1Img1}
+                alt={`${project.name} showcase detail 1`}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] block"
+              />
+            </div>
+
+            <div
+              className="w-full overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px] bg-[#16181D]"
+              style={{ height: 'clamp(160px, 22vw, 340px)' }}
+            >
+              <img
+                src={project.col1Img2}
+                alt={`${project.name} showcase detail 2`}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] block"
+              />
+            </div>
+          </div>
+
+          {/* Right Column (60%) */}
+          <div className="w-full md:w-[60%] flex">
+            <div
+              className="w-full overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px] bg-[#16181D] flex-1"
+              style={{
+                height:
+                  'calc(clamp(130px, 16vw, 230px) + clamp(160px, 22vw, 340px) + 1rem)',
+              }}
+            >
+              <img
+                src={project.col2Img}
+                alt={`${project.name} primary 3D render`}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] block"
+              />
+            </div>
+          </div>
+        </div>
+      </motion.article>
+    </div>
+  );
+};
+
+interface ProjectsSectionProps {
+  onSelectProject: (project: ProjectItem) => void;
+}
+
+export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
+  onSelectProject,
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  return (
+    <section
+      id="projects"
+      aria-label="作品"
+      className="relative z-10 w-full bg-[#0C0C0C] rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] -mt-10 sm:-mt-12 md:-mt-14 px-5 sm:px-8 md:px-10 pt-20 sm:pt-24 md:pt-32 pb-28 sm:pb-36"
+    >
+      <FadeIn delay={0} y={40}>
+        <h2
+          className="hero-heading font-black uppercase leading-none tracking-tight text-center mb-14 sm:mb-20 md:mb-28"
+          style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
+        >
+          作品
+        </h2>
+      </FadeIn>
+
+      <div ref={containerRef} className="relative w-full max-w-6xl mx-auto">
+        {PROJECTS.map((project, index) => (
+          <StickyProjectCard
+            key={project.number}
+            project={project}
+            index={index}
+            totalCards={PROJECTS.length}
+            progress={scrollYProgress}
+            onSelectProject={onSelectProject}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};

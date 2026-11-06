@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>李翰林 (Luis Li) — 个人简历</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 18mm 18mm 18mm 18mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      color: #1a1a1a;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 10px 0;
+    }
+    header {
+      border-bottom: 2px solid #8B5CF6;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .title-group h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0A0A0A;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .title-group .en-name {
+      font-size: 18px;
+      color: #666;
+      font-weight: 500;
+      margin-left: 6px;
+    }
+    .title-group .role {
+      font-size: 14px;
+      color: #8B5CF6;
+      font-weight: 700;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
+    .contact-info {
+      text-align: right;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .contact-info strong {
+      color: #0A0A0A;
+    }
+    .badge-status {
+      display: inline-block;
+      background: #EDE9FE;
+      color: #6D28D9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 3px;
+    }
+    section {
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8B5CF6;
+      border-bottom: 1px solid #E5E7EB;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .item-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #111;
+    }
+    .item-tag {
+      font-size: 11.5px;
+      color: #6D28D9;
+      background: #F3F4F6;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .item-date {
+      font-size: 12px;
+      color: #777;
+    }
+    .item-sub {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .item-desc {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.6;
+      text-align: justify;
+    }
+    .grid-skills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .skill-card {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .skill-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 3px;
+    }
+    .skill-card-content {
+      font-size: 11.5px;
+      color: #4B5563;
+      line-height: 1.5;
+    }
+    .quote-box {
+      margin-top: 14px;
+      padding: 8px 12px;
+      background: #FDF4FF;
+      border-left: 3px solid #8B5CF6;
+      border-radius: 0 4px 4px 0;
+      font-size: 11.5px;
+      font-style: italic;
+      color: #6B21A8;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header>
+      <div class="title-group">
+        <h1>李翰林 <span class="en-name">Luis Li</span></h1>
+        <div class="role">UI 视觉设计师 · AI 设计师 · 品牌设计师</div>
+      </div>
+      <div class="contact-info">
+        <div>邮箱：<strong>lihanlin_luis@163.com</strong></div>
+        <div>常驻地：湖北武汉 · 2027 届本科在读</div>
+        <div><span class="badge-status">可实习 · 可全职 · 欢迎约面</span></div>
+      </div>
+    </header>
+
+    <!-- 教育背景 -->
+    <section>
+      <div class="section-title">教育背景 / Education</div>
+      <div>
+        <div class="item-header">
+          <div>
+            <span class="item-title">南京理工大学泰州科技学院</span>
+            <span class="item-tag">全日制本科</span>
+          </div>
+          <span class="item-date">2023.09 — 2027.06</span>
+        </div>
+        <div class="item-sub">数字媒体艺术 本科在读 · <strong>GPA 3.65 / 4.0</strong></div>
+        <div class="item-desc">
+          主修课程：视觉传达设计、UI/UX 界面设计、三维动画与渲染、品牌形象设计、动态图形设计、生成式 AI 视觉探索。
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心能力 -->
+    <section>
+      <div class="section-title">核心专业能力 / Core Capabilities</div>
+      <div class="grid-skills">
+        <div class="skill-card">
+          <div class="skill-card-title">01 品牌视觉设计</div>
+          <div class="skill-card-content">从 Logo、VI 规范到全场景物料落地，具备完整的品牌识别系统推导与视觉输出能力。</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">02 UI/UX 界面设计</div>
+          <div class="skill-card-content">熟练使用 Figma 搭建高保真交互原型与规范化组件系统，覆盖 App、Web 与游戏 UI。</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">03 三维与动态视觉</div>
+          <div class="skill-card-content">基于 Cinema 4D、Blender 进行产品渲染、三渲二风格化视觉以及 AE 动态叙事短片制作。</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">04 生成式 AI 视觉管线</div>
+          <div class="skill-card-content">掌握 ComfyUI 可控工作流（ControlNet / IP-Adapter）、Runway 动态视频与 AI 商业概念资产生成。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 重点项目经历 -->
+    <section>
+      <div class="section-title">重点项目经历 / Selected Projects</div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <div class="item-header">
+            <div>
+              <span class="item-title">南京粉红塔育儿园 — 完整品牌 VI 视觉系统</span>
+              <span class="item-tag">品牌 VI · 设计组长</span>
+            </div>
+            <span class="item-date">商业项目</span>
+          </div>
+          <div class="item-desc">
+            在校期间作为设计组长主导完整品牌视觉识别系统（VI）。从品牌定位、情绪板提炼到品牌核心 Logo、色彩体系与字体规范制定；完成园区导视系统、教师工牌、宣传册、全套衍生周边物料及落地执行手册，兼顾儿童亲和力与商业规范的严谨性。
+          </div>
+        </div>
+
+        <div>
+          <div class="item-header">
+            <div>
+              <span class="item-title">科技馆科普视觉展陈与学术会议物料</span>
+              <span class="item-tag">视觉设计 · 学生助理</span>
+            </div>
+            <span class="item-date">机构展陈 / 会议</span>
+          </div>
+          <div class="item-desc">
+            参与科技馆科普展板与信息图表可视化设计，将复杂科学原理转化为通俗易懂的生动视觉语言；负责国际学术会议的主视觉延展设计，完成主背景板、易拉宝、会议手册及名牌等全流程物料统筹与印刷跟色把控。
+          </div>
+        </div>
+
+        <div>
+          <div class="item-header">
+            <div>
+              <span class="item-title">个人 AI 视觉与三维数字化工作流实践</span>
+              <span class="item-tag">个人项目 · 探索创新</span>
+            </div>
+            <span class="item-date">持续迭代</span>
+          </div>
+          <div class="item-desc">
+            深度融合 Figma、Cinema 4D 与 ComfyUI，搭建面向次世代 UI 与视觉设计的生成式 AI 生产流。结合提示词工程与 ControlNet 姿态/线稿控制，产出高质量 3D 渲染质感概念海报与动态影像，大幅提升视觉资产概念验证效率。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 专业工具 & 理念 -->
+    <section style="margin-bottom: 0;">
+      <div class="section-title">软件技能与设计理念 / Skills & Philosophy</div>
+      <div class="skill-card" style="margin-bottom: 8px;">
+        <div class="skill-card-content">
+          <strong>设计与 3D 工具：</strong>Figma, Cinema 4D, Blender, Photoshop, Illustrator, After Effects<br>
+          <strong>生成式 AI 工具：</strong>ComfyUI, Midjourney, Runway, Stable Diffusion, SDXL
+        </div>
+      </div>
+      <div class="quote-box">
+        “我相信好的设计是理性网格加感性叙事的结合。” —— 李翰林 (Luis Li)
+      </div>
+    </section>
+  </div>
+</body>
+</html>

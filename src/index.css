@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #0C0C0C;
+    font-family: 'Kanit', 'PingFang SC', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif;
+    color: #D7E2EA;
+  }
+
+  body,
+  #root {
+    background-color: #0C0C0C;
+    font-family: 'Kanit', 'PingFang SC', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Explicit vertical and horizontal scrollbar styling for resume viewer */
+.resume-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.resume-scrollbar::-webkit-scrollbar-track {
+  background: #14171d;
+  border-radius: 8px;
+}
+.resume-scrollbar::-webkit-scrollbar-thumb {
+  background: #434c5e;
+  border-radius: 8px;
+  border: 2px solid #14171d;
+}
+.resume-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8892b0;
+}
+.resume-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #434c5e #14171d;
+}
+
+@media (pointer: fine) {
+  html.custom-cursor-enabled,
+  html.custom-cursor-enabled body,
+  html.custom-cursor-enabled a,
+  html.custom-cursor-enabled button,
+  html.custom-cursor-enabled [role="button"],
+  html.custom-cursor-enabled [data-cursor="project"] {
+    cursor: none !important;
+  }
+}
+
