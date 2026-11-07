@@ -321,6 +321,259 @@ export function shouldShowHrFloatingCard(
   return scrollY >= safeVh * 0.38;
 }
 
+export type ProjectCoverSlot = 'col1Img1' | 'col1Img2' | 'col2Img';
 
+export interface ProjectCardCovers {
+  col1Img1: string;
+  col1Img2: string;
+  col2Img: string;
+}
 
+export interface CoverableMediaItem {
+  id: string;
+  type: 'image' | 'video' | 'html';
+  url: string;
+  alt?: string;
+  fileName?: string;
+  htmlContent?: string;
+  coverUrl?: string;
+  isCover?: boolean;
+  isCustom?: boolean;
+  coverSlot?: ProjectCoverSlot;
+}
+
+/**
+ * Builds a deterministic SVG data-URI cover image for uploaded HTML or video items
+ * when no manual cover image has been provided yet, extracting an embedded <img> from HTML if available.
+ */
+export function buildGeneratedMediaCoverSvg(
+  type: 'video' | 'html',
+  title: string,
+  projectName = '',
+  htmlContent?: string
+): string {
+  if (type === 'html' && htmlContent) {
+    const imgMatch = htmlContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (
+      imgMatch &&
+      imgMatch[1] &&
+      (imgMatch[1].startsWith('http') ||
+        imgMatch[1].startsWith('data:image/') ||
+        imgMatch[1].startsWith('/'))
+    ) {
+      return imgMatch[1];
+    }
+  }
+
+  const safeTitle = (title || (type === 'video' ? '视频演示' : 'HTML 交互页面'))
+    .replace(/[<>&"']/g, '')
+    .slice(0, 28);
+  const safeProject = (projectName || 'PORTFOLIO PROJECT')
+    .replace(/[<>&"']/g, '')
+    .slice(0, 32);
+  const badge = type === 'video' ? 'VIDEO SHOWCASE' : 'HTML INTERACTIVE';
+  const accentStart = '#94a3b8';
+  const accentEnd = '#d7e2ea';
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#0c0c0c"/>
+        <stop offset="55%" stop-color="#13161d"/>
+        <stop offset="100%" stop-color="#0c0e12"/>
+      </linearGradient>
+      <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${accentStart}"/>
+        <stop offset="100%" stop-color="${accentEnd}"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#bg)"/>
+    <circle cx="680" cy="120" r="220" fill="url(#accent)" opacity="0.08"/>
+    <circle cx="140" cy="500" r="180" fill="url(#accent)" opacity="0.06"/>
+    <rect x="56" y="56" width="688" height="488" rx="32" fill="#111318" fill-opacity="0.88" stroke="${accentEnd}" stroke-width="1.5" stroke-opacity="0.32"/>
+    <rect x="96" y="104" width="220" height="40" rx="20" fill="#161922" stroke="${accentEnd}" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="206" y="129" text-anchor="middle" fill="${accentEnd}" font-family="sans-serif" font-size="14" font-weight="600" letter-spacing="2">${badge}</text>
+    <text x="96" y="255" fill="#d7e2ea" font-family="sans-serif" font-size="40" font-weight="800">${safeTitle}</text>
+    <text x="96" y="312" fill="#94a3b8" font-family="sans-serif" font-size="20" font-weight="400">${safeProject}</text>
+    <rect x="96" y="380" width="608" height="104" rx="20" fill="#0c0e12" stroke="#d7e2ea" stroke-opacity="0.14"/>
+    <circle cx="150" cy="432" r="24" fill="#d7e2ea"/>
+    <polygon points="145,421 145,443 163,432" fill="#0c0c0c"/>
+    <text x="196" y="427" fill="#d7e2ea" font-family="sans-serif" font-size="19" font-weight="600">${type === 'video' ? '已上传本地演示视频 · 点击查看播放' : '已上传 HTML 交互原型 · 点击在线预览'}</text>
+    <text x="196" y="456" fill="#64748b" font-family="sans-serif" font-size="14" letter-spacing="1">CUSTOM UPLOADED MEDIA COVER</text>
+  </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+export function getEffectiveMediaCoverUrl(
+  item: CoverableMediaItem,
+  projectName = ''
+): string {
+  if (item.coverUrl) return item.coverUrl;
+  if (item.type === 'image') return item.url;
+  return buildGeneratedMediaCoverSvg(
+    item.type,
+    item.fileName || item.alt || '',
+    projectName,
+    item.htmlContent
+  );
+}
+
+/**
+ * Marks the target item as the active cover (`isCover: true`) and clears `isCover` on other items,
+ * returning the updated items array and the resolved cover image URL.
+ */
+export function selectGalleryCoverItem<T extends CoverableMediaItem>(
+  items: T[],
+  targetId: string,
+  fallbackCoverUrl = ''
+): { items: Array<T & { isCover: boolean }>; coverUrl: string } {
+  let resolvedCover = fallbackCoverUrl;
+  const updated = items.map((item) => {
+    const isTarget = item.id === targetId;
+    if (isTarget) {
+      resolvedCover = getEffectiveMediaCoverUrl(item) || fallbackCoverUrl;
+    }
+    return {
+      ...item,
+      isCover: isTarget,
+    };
+  });
+
+  return {
+    items: updated,
+    coverUrl: resolvedCover,
+  };
+}
+
+/**
+ * Marks the target item as the active cover (`isCover: true`) or assigns it to a specific
+ * project card slot (`col1Img1` | `col1Img2` | `col2Img`), returning the updated items array.
+ */
+export function assignGalleryCoverSlot<T extends CoverableMediaItem>(
+  items: T[],
+  targetId: string,
+  slot: ProjectCoverSlot
+): T[] {
+  const updated = items.map((item) => {
+    const isTarget = item.id === targetId;
+    if (slot === 'col2Img') {
+      return {
+        ...item,
+        isCover: isTarget,
+        coverSlot: isTarget
+          ? ('col2Img' as ProjectCoverSlot)
+          : item.coverSlot === 'col2Img'
+            ? undefined
+            : item.coverSlot,
+      };
+    }
+    return {
+      ...item,
+      isCover: isTarget ? false : item.isCover,
+      coverSlot: isTarget
+        ? slot
+        : item.coverSlot === slot
+          ? undefined
+          : item.coverSlot,
+    };
+  });
+
+  // Ensure at least one item not pinned to col1Img1/col1Img2 remains isCover when possible
+  if (!updated.some((i) => Boolean(i.isCover))) {
+    const fallbackCol2 =
+      updated.find((i) => i.id === '3' && i.coverSlot !== 'col1Img1' && i.coverSlot !== 'col1Img2') ||
+      [...updated]
+        .reverse()
+        .find((i) => i.coverSlot !== 'col1Img1' && i.coverSlot !== 'col1Img2');
+    if (fallbackCol2) {
+      fallbackCol2.isCover = true;
+      fallbackCol2.coverSlot = 'col2Img';
+    }
+  }
+
+  return updated;
+}
+
+/**
+ * Synchronously derives all 3 cover image slots (`col1Img1`, `col1Img2`, `col2Img`)
+ * for a project card based on its gallery items (including uploaded images, videos, HTML files,
+ * and explicit slot assignments).
+ */
+export function deriveProjectCardCovers<T extends CoverableMediaItem>(
+  items: T[],
+  baseCovers: ProjectCardCovers,
+  projectName = ''
+): ProjectCardCovers {
+  if (!items || items.length === 0) {
+    return { ...baseCovers };
+  }
+
+  const usedIds = new Set<string>();
+
+  // 1. Primary right-hand cover (col2Img): item with isCover === true or coverSlot === 'col2Img', avoiding items pinned to col1Img1/col1Img2
+  const col2Candidate =
+    items.find((i) => Boolean(i.isCover)) ||
+    items.find((i) => i.coverSlot === 'col2Img') ||
+    [...items]
+      .reverse()
+      .find((i) => i.coverSlot !== 'col1Img1' && i.coverSlot !== 'col1Img2') ||
+    items[items.length - 1];
+
+  const col2Img = col2Candidate
+    ? getEffectiveMediaCoverUrl(col2Candidate, projectName)
+    : baseCovers.col2Img;
+  if (col2Candidate) {
+    usedIds.add(col2Candidate.id);
+  }
+
+  // Unused custom/modified items (newest first) so uploaded files automatically populate secondary covers
+  const customUnused = [...items]
+    .reverse()
+    .filter(
+      (i) =>
+        !usedIds.has(i.id) &&
+        (Boolean(i.isCustom) || Boolean(i.coverUrl))
+    );
+
+  // 2. Top-left cover (col1Img1): explicit coverSlot === 'col1Img1' wins, else newest unused custom item, else first unused item
+  const explicitCol1Img1 = items.find(
+    (i) => !usedIds.has(i.id) && i.coverSlot === 'col1Img1'
+  );
+  const col1Img1Candidate =
+    explicitCol1Img1 && (explicitCol1Img1.isCustom || explicitCol1Img1.coverUrl)
+      ? explicitCol1Img1
+      : customUnused[0] ||
+        explicitCol1Img1 ||
+        items.find((i) => !usedIds.has(i.id));
+
+  const col1Img1 = col1Img1Candidate
+    ? getEffectiveMediaCoverUrl(col1Img1Candidate, projectName)
+    : col2Img || baseCovers.col1Img1;
+  if (col1Img1Candidate) {
+    usedIds.add(col1Img1Candidate.id);
+  }
+
+  // 3. Bottom-left cover (col1Img2): explicit coverSlot === 'col1Img2' wins, else next unused custom item, else next unused item
+  const remainingCustomUnused = customUnused.filter((i) => !usedIds.has(i.id));
+  const explicitCol1Img2 = items.find(
+    (i) => !usedIds.has(i.id) && i.coverSlot === 'col1Img2'
+  );
+  const col1Img2Candidate =
+    explicitCol1Img2 && (explicitCol1Img2.isCustom || explicitCol1Img2.coverUrl)
+      ? explicitCol1Img2
+      : remainingCustomUnused[0] ||
+        explicitCol1Img2 ||
+        items.find((i) => !usedIds.has(i.id));
+
+  const col1Img2 = col1Img2Candidate
+    ? getEffectiveMediaCoverUrl(col1Img2Candidate, projectName)
+    : col1Img1 || col2Img || baseCovers.col1Img2;
+
+  return {
+    col1Img1,
+    col1Img2,
+    col2Img,
+  };
+}
 

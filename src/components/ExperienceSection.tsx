@@ -353,8 +353,8 @@ export const ExperienceSection: React.FC = () => {
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start justify-between gap-4">
                         <span
-                          className="font-black text-[#D7E2EA] leading-none tabular-nums select-none transition-transform duration-200 group-hover:translate-x-1"
-                          style={{ fontSize: 'clamp(2.75rem, 4.5vw, 4.25rem)' }}
+                          className="font-bold text-[#D7E2EA] leading-[1.08] tracking-[0.06em] px-0.5 select-none transition-transform duration-200 group-hover:translate-x-1"
+                          style={{ fontSize: 'clamp(2.5rem, 4.2vw, 3.85rem)' }}
                         >
                           {exp.indexNumber}
                         </span>

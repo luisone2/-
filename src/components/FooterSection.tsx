@@ -74,8 +74,8 @@ const SpotlightContactCard: React.FC<SpotlightCardProps> = ({
         <div className="relative z-10 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3">
             <span
-              className="font-black text-[#D7E2EA] leading-none tabular-nums select-none transition-transform duration-200 group-hover:translate-x-1"
-              style={{ fontSize: 'clamp(2.75rem, 4.5vw, 4rem)' }}
+              className="font-bold text-[#D7E2EA] leading-[1.08] tracking-[0.06em] px-0.5 select-none transition-transform duration-200 group-hover:translate-x-1"
+              style={{ fontSize: 'clamp(2.5rem, 4.2vw, 3.75rem)' }}
             >
               {indexNumber}
             </span>
@@ -396,13 +396,6 @@ export const FooterSection: React.FC<FooterSectionProps> = ({
               className="text-[#D7E2EA]/70 hover:text-white underline-offset-4 hover:underline transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               作品
-            </button>
-            <button
-              type="button"
-              onClick={onOpenResume}
-              className="text-[#D7E2EA]/70 hover:text-white underline-offset-4 hover:underline transition-colors cursor-pointer whitespace-nowrap shrink-0"
-            >
-              简历
             </button>
           </nav>
 

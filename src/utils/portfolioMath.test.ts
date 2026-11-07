@@ -11,6 +11,7 @@ import {
   generateDeterministicQrMatrix,
   calculateDockItemScale,
   shouldShowHrFloatingCard,
+  selectGalleryCoverItem,
 } from './portfolioMath';
 
 test('calculateMarqueeOffset computes exact scroll offset and opposite row translations', () => {
@@ -140,6 +141,89 @@ test('shouldShowHrFloatingCard hides HR card in Hero and reveals it after scroll
   assert.equal(shouldShowHrFloatingCard(1200, 900), true);
 });
 
+test('selectGalleryCoverItem marks selected item as cover and resolves coverUrl', () => {
+  const initial = [
+    { id: '1', type: 'image' as const, url: 'img1.jpg', isCover: false },
+    { id: '2', type: 'image' as const, url: 'img2.jpg', isCover: false },
+    { id: '3', type: 'image' as const, url: 'img3.jpg', isCover: true },
+  ];
+  const res = selectGalleryCoverItem(initial, '1', 'img3.jpg');
+  assert.equal(res.coverUrl, 'img1.jpg');
+  assert.equal(res.items[0].isCover, true);
+  assert.equal(res.items[2].isCover, false);
 
+  const withHtmlCover = [
+    ...res.items,
+    { id: 'html-1', type: 'html' as const, url: 'blob:1', coverUrl: 'custom-cover.png' },
+  ];
+  const res2 = selectGalleryCoverItem(withHtmlCover, 'html-1', 'img1.jpg');
+  assert.equal(res2.coverUrl, 'custom-cover.png');
+  assert.equal(res2.items[3].isCover, true);
+  assert.equal(res2.items[0].isCover, false);
+});
+
+test('reviveGalleryItems regenerates fresh blob URLs for persisted video Blobs and HTML items', async () => {
+  const { reviveGalleryItems } = await import('./mediaStorage');
+  const videoBlob = new Blob(['video-bytes'], { type: 'video/mp4' });
+  const persisted = [
+    {
+      id: 'v1',
+      type: 'video' as const,
+      url: 'blob:stale-expired-url',
+      alt: 'Demo Video',
+      fileBlob: videoBlob,
+      coverUrl: 'data:image/png;base64,abc',
+      isCover: true,
+    },
+    {
+      id: 'h1',
+      type: 'html' as const,
+      url: 'blob:stale-html-url',
+      alt: 'Interactive Demo',
+      htmlContent: '<h1>Hello</h1>',
+      isCover: false,
+    },
+  ];
+  const revived = reviveGalleryItems(persisted, 'default.jpg');
+  assert.notEqual(revived[0].url, 'blob:stale-expired-url');
+  assert.ok(revived[0].url.startsWith('blob:'));
+  assert.equal(revived[0].isCover, true);
+  assert.notEqual(revived[1].url, 'blob:stale-html-url');
+  assert.ok(revived[1].url.startsWith('blob:'));
+});
+
+test('deriveProjectCardCovers and assignGalleryCoverSlot synchronize all 3 project card cover slots', async () => {
+  const { deriveProjectCardCovers, assignGalleryCoverSlot } = await import('./portfolioMath');
+  const baseCovers = {
+    col1Img1: 'base-left-1.jpg',
+    col1Img2: 'base-left-2.jpg',
+    col2Img: 'base-right-main.jpg',
+  };
+
+  const items: Array<{
+    id: string;
+    type: 'image' | 'video' | 'html';
+    url: string;
+    isCover?: boolean;
+    isCustom?: boolean;
+    coverSlot?: 'col1Img1' | 'col1Img2' | 'col2Img';
+  }> = [
+    { id: '1', type: 'image', url: 'base-left-1.jpg', coverSlot: 'col1Img1' },
+    { id: '2', type: 'image', url: 'base-left-2.jpg', coverSlot: 'col1Img2' },
+    { id: '3', type: 'image', url: 'base-right-main.jpg', isCover: false },
+    { id: 'u1', type: 'image', url: 'uploaded-1.jpg', isCustom: true, isCover: true, coverSlot: 'col2Img' },
+  ];
+
+  const derived1 = deriveProjectCardCovers(items, baseCovers, 'TestProject');
+  assert.equal(derived1.col2Img, 'uploaded-1.jpg');
+  assert.equal(derived1.col1Img1, 'base-left-1.jpg');
+  assert.equal(derived1.col1Img2, 'base-left-2.jpg');
+
+  // Assign 'u1' to top-left slot ('col1Img1')
+  const reassigned = assignGalleryCoverSlot(items, 'u1', 'col1Img1');
+  const derived2 = deriveProjectCardCovers(reassigned, baseCovers, 'TestProject');
+  assert.equal(derived2.col1Img1, 'uploaded-1.jpg');
+  assert.equal(derived2.col2Img, 'base-right-main.jpg');
+});
 
 
